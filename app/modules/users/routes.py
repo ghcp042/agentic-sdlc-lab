@@ -1,0 +1,38 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from . import service, schemas
+from .exceptions import DuplicateUserError, AuthenticationError
+from app.core.auth import create_access_token
+from app.core import dependencies as deps
+
+router = APIRouter()
+
+
+@router.post("/register", response_model=schemas.UserRead)
+def register_user(payload: schemas.UserCreate, repo: deps.UserRepository = Depends(deps.get_users_repository)):
+    try:
+        return service.create_user(repo, payload.username, payload.password)
+    except DuplicateUserError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error creating user"
+        )
+
+
+@router.post("/login", response_model=schemas.UserToken)
+def login_user(payload: schemas.UserAuthenticate, repo: deps.UserRepository = Depends(deps.get_users_repository)):
+    try:
+        user = service.authenticate_user(repo, payload.username, payload.password)
+    except AuthenticationError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e),
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    token = create_access_token(user.username)
+    return schemas.UserToken(
+        access_token=token,
+        token_type="bearer"
+    )
