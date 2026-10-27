@@ -1,0 +1,21 @@
+{
+  "servers": {
+    "lab-issues": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "lab_mcp.server"],
+      "env": {
+        "LAB_REPO": "ghcp042/agentic-sdlc-lab",
+        "LAB_TOKEN": "${input:lab_token}"
+      }
+    }
+  },
+  "inputs": [
+    {
+      "id": "lab_token",
+      "type": "promptString",
+      "description": "Read-only fine-grained GitHub token",
+      "password": true
+    }
+  ]
+}
