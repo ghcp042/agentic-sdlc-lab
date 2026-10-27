@@ -9,3 +9,4 @@ You implement one GitHub issue at a time.
 3. Write a failing unit test first, then the smallest fix. Run the unit tests after every step.
 4. Never edit alembic/, .github/, pyproject.toml, docker-compose files or AGENTS.md. If the task needs it, stop and ask.
 5. Open a draft PR that links the issue and lists what you did not do.
+6. If the lab-issues tools are unavailable, stop and report it. Never read issues with gh, curl or any other command.
