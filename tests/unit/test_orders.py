@@ -117,6 +117,7 @@ VALID_TRANSITIONS = [
     (models.OrderStatus.FULFILLED, models.OrderStatus.SHIPPED),
     (models.OrderStatus.FULFILLED, models.OrderStatus.CANCELLED),
     (models.OrderStatus.SHIPPED, models.OrderStatus.DELIVERED),
+    (models.OrderStatus.DELIVERED, models.OrderStatus.RETURNED),
 ]
 
 INVALID_TRANSITIONS = [
@@ -133,6 +134,9 @@ INVALID_TRANSITIONS = [
     (models.OrderStatus.DELIVERED, models.OrderStatus.DELIVERED),
     (models.OrderStatus.CANCELLED, models.OrderStatus.PROCESSING),
     (models.OrderStatus.CANCELLED, models.OrderStatus.CANCELLED),
+    (models.OrderStatus.RETURNED, models.OrderStatus.RECEIVED),
+    (models.OrderStatus.RETURNED, models.OrderStatus.CANCELLED),
+    (models.OrderStatus.RETURNED, models.OrderStatus.RETURNED),
 ]
 
 
@@ -147,8 +151,9 @@ def test_fsm_invalid_transitions(current, target):
         OrderStateMachine.validate_transition(current, target)
 
 
-def test_fsm_delivered_has_no_outgoing_transitions():
-    assert OrderStateMachine.TRANSITIONS[models.OrderStatus.DELIVERED] == []
+def test_delivered_only_leads_to_returned():
+    # Decision (issue 5 owner): DELIVERED is terminal except for returns.
+    assert OrderStateMachine.TRANSITIONS[models.OrderStatus.DELIVERED] == [models.OrderStatus.RETURNED]
 
 
 def test_fsm_unknown_current_status():
@@ -207,3 +212,4 @@ def test_cancel_order_rejects_already_cancelled():
     order = _make_order(status=models.OrderStatus.CANCELLED)
     with pytest.raises(OrderOwnershipError, match="already cancelled"):
         service.cancel_order(_make_db(), _make_mock_repo(order=order), 1)
+
