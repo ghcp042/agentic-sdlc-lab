@@ -9,4 +9,4 @@
 - POST /orders/{id}/cancel on a delivered order returns 400
 - `python -m pytest tests/unit -q` passes
 **Stop and ask a human if:** the fix needs a schema change or a change in the payment module
-**Reviewer:** your partner
+**Reviewer:** your second account
