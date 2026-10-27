@@ -27,7 +27,10 @@ class OrderStateMachine:
         models.OrderStatus.SHIPPED: [
             models.OrderStatus.DELIVERED
         ],
-        models.OrderStatus.DELIVERED: [],
+        models.OrderStatus.DELIVERED: [
+            models.OrderStatus.RETURNED,
+        ],
+        models.OrderStatus.RETURNED: [],
         models.OrderStatus.CANCELLED: [],
     }
 

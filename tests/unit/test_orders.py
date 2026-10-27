@@ -117,6 +117,7 @@ VALID_TRANSITIONS = [
     (models.OrderStatus.FULFILLED, models.OrderStatus.SHIPPED),
     (models.OrderStatus.FULFILLED, models.OrderStatus.CANCELLED),
     (models.OrderStatus.SHIPPED, models.OrderStatus.DELIVERED),
+    (models.OrderStatus.DELIVERED, models.OrderStatus.RETURNED),
 ]
 
 INVALID_TRANSITIONS = [
@@ -133,6 +134,9 @@ INVALID_TRANSITIONS = [
     (models.OrderStatus.DELIVERED, models.OrderStatus.DELIVERED),
     (models.OrderStatus.CANCELLED, models.OrderStatus.PROCESSING),
     (models.OrderStatus.CANCELLED, models.OrderStatus.CANCELLED),
+    (models.OrderStatus.RETURNED, models.OrderStatus.RECEIVED),
+    (models.OrderStatus.RETURNED, models.OrderStatus.CANCELLED),
+    (models.OrderStatus.RETURNED, models.OrderStatus.RETURNED),
 ]
 
 
